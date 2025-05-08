@@ -1,15 +1,14 @@
-import logo from './logo.svg';
+import { BrowserRouter } from "react-router-dom";
 import './App.css';
+import RoutesApp from "./routes";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Ceaca Frontend
-        </p>
-      </header>
-    </div>
+    <BrowserRouter>  
+      <RoutesApp />
+    </BrowserRouter>
+
+  
   );
 }
 
