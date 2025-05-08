@@ -1,0 +1,62 @@
+.filtro-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.filtro-container input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 250px;
+}
+
+.botao-filtro,
+.botao-exportar {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #f3f3f3;
+  cursor: pointer;
+}
+
+.botao-filtro:hover,
+.botao-exportar:hover {
+  background-color: #e0e0e0;
+}
+
+.tabela-container {
+  overflow-x: auto;
+  background: #f8f9fb;
+  border-radius: 8px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+thead {
+  background-color: #e1e4ea;
+}
+
+th,
+td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #d1d5db;
+}
+
+tbody tr:hover {
+  background-color: #f1f5f9;
+}
+
+.input-data {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #333;
+}
