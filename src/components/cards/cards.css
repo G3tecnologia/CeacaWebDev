@@ -1,0 +1,51 @@
+.cards {
+  display: flex;
+  gap: 1rem; 
+  justify-content: space-between;
+}
+
+.card {
+  flex: 1;
+  padding: 1rem;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.nome{
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.valor{
+    font-weight: bold;
+    font-size: 4.5rem;
+}
+
+span{
+    color: #5f5f5f;
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.card.verde p {
+  color: #12A405;
+}
+
+.card.vermelho p {
+  color: #CE2B2B;
+}
+
+.card.laranja p {
+  color: #D25903;
+}
+
+.card.verde .valor {
+    color: #12A405;
+}
+.card.vermelho .valor {
+    color: #CE2B2B;
+}
+.card.laranja .valor {
+    color: #D25903;
+}
