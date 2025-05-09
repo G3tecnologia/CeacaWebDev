@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import logo from "../../assets/images/logo.png";
 
 import './navBar.css';
+import { FaTruck } from 'react-icons/fa';
 
 export default function NavBar(){
     return(
@@ -29,7 +30,12 @@ export default function NavBar(){
                 Listagem
            </Link> 
 
-           <Link to="/listagem">
+           <Link to="/veiculos">
+                <FaTruck color='#151515FFF' size={24}></FaTruck>
+                Listagem
+           </Link> 
+
+           <Link to="#">
                 <FiLogOut color='#151515FFF' size={24}></FiLogOut>
                 Sair
            </Link> 

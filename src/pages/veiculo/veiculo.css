@@ -1,0 +1,115 @@
+.content {
+  position: relative;
+  padding: 20px;
+}
+
+.tabela-container {
+  overflow-x: auto;
+  background: #f8f9fb;
+  border-radius: 8px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+thead {
+  background-color: #e1e4ea;
+}
+
+th,
+td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #d1d5db;
+}
+
+tbody tr:hover {
+  background-color: #f1f5f9;
+}
+
+.input-data {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #333;
+}
+
+.tabela-container {
+  background: #f8f9fb;
+  border-radius: 8px;
+  overflow-x: auto;
+  padding: 16px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.filtros-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.filtros-container select,
+.filtros-container input {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.filtros-container button {
+  padding: 8px 12px;
+  background-color: #005816;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.filtros-container button:hover {
+  background-color: #004410;
+}
+
+.tabela-footer {
+  display: flex;
+  justify-content: center;
+  margin: 15px;
+}
+
+.paginacao {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.paginacao button {
+  background-color: #00350d; 
+  color: white;              
+  border: none;
+  padding: 8px;
+  border-radius: 50%;      
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.paginacao button:hover {
+  background-color: #005816; 
+}
+
+.paginacao button:disabled {
+  background-color: #a9a9a9;
+  cursor: not-allowed;
+}
