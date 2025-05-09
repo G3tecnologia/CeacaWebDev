@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import logo from "../../assets/images/logo.png";
 
 export default function Login() {
@@ -8,12 +9,6 @@ export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
-  // Definição de credenciais estáticas
-  const staticCredentials = {
-    cpf_cnpj: "41887719415",
-    password: "123456",
-  };
 
   const validateInputs = () => {
     if (!cpfCnpj || cpfCnpj.length < 11 || cpfCnpj.length > 14) {
@@ -28,20 +23,29 @@ export default function Login() {
     return true;
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!validateInputs()) return;
 
     setLoading(true);
 
-    setTimeout(() => {
-      if (cpfCnpj === staticCredentials.cpf_cnpj && password === staticCredentials.password) {
+    try {
+      const response = await axios.post("http://localhost:3002/api/login", {
+        cpf_cnpj: cpfCnpj,
+        password: password,
+      });
+
+      if (response.status === 200 && response.data.token) {
+        localStorage.setItem("token", response.data.token);
         console.log("Login bem-sucedido, redirecionando...");
-        navigate("/visaoGeral"); // Redireciona para a página de Visão Geral
+        navigate("/visaoGeral"); 
       } else {
-        setError("Credenciais inválidas!");
+        setError(response.data.message || "Credenciais inválidas!");
       }
+    } catch (error) {
+      setError(error.response?.data?.message || "Erro ao conectar ao servidor.");
+    } finally {
       setLoading(false);
-    }, 1000); // Simulando um pequeno atraso para experiência do usuário
+    }
   };
 
   return (
@@ -79,6 +83,7 @@ export default function Login() {
     </div>
   );
 }
+
 
 const styles = {
   wrapper: {
