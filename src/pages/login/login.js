@@ -25,21 +25,29 @@ export default function Login() {
 
   const handleLogin = async () => {
     if (!validateInputs()) return;
-
+  
     setLoading(true);
-
+  
     try {
       const response = await axios.post("http://localhost:3002/api/login", {
         cpf_cnpj: cpfCnpj,
         password: password,
       });
-
-      if (response.status === 200 && response.data.token && response.data.id_cliente) {
-        localStorage.setItem("token", response.data.token); // 🆕 Armazena o token
-        localStorage.setItem("id_cliente", response.data.id_cliente); // 🆕 Armazena o ID do usuário
-        localStorage.setItem("role", response.data.role); // 🆕 Armazena a função do usuário
+  
+      if (response.status === 200 && response.data.token && response.data.role) {
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("id_cliente", response.data.id);
+        localStorage.setItem("role", response.data.role);
+  
         console.log("Login bem-sucedido, redirecionando...");
-        navigate("/visaoGeral"); 
+  
+        
+        if (response.data.role === "admin") {
+          navigate("/visaoGeral"); 
+        } else if (response.data.role === "user") {
+          navigate("/boletos"); 
+        }
+        
       } else {
         setError(response.data.message || "Credenciais inválidas!");
       }
@@ -49,6 +57,8 @@ export default function Login() {
       setLoading(false);
     }
   };
+  
+  
 
   return (
     <div style={styles.wrapper}>
