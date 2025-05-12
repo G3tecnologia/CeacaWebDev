@@ -14,12 +14,6 @@ export default function Cards({ nomes, valores, informacoes }) {
           <p className="valor">{valores[1]}</p>
           <span className="informacao">{informacoes[1]}</span>
         </div>
-  
-        <div className="card laranja">
-          <p className="nome">{nomes[2]}</p>
-          <p className="valor">{valores[2]}</p>
-          <span className="informacao">{informacoes[2]}</span>
-        </div>
       </div>
     );
   }

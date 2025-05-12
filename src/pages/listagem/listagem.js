@@ -4,7 +4,7 @@ import { HiOutlineViewList } from "react-icons/hi";
 import Cards from "../../components/cards";
 import NavBar from "../../components/navBar";
 import Title from "../../components/title";
-import "./listagem.css"; // cria esse arquivo com os estilos abaixo
+import "./listagem.css"; 
 
 export default function Listagem() {
   const nomes = [
@@ -32,7 +32,7 @@ export default function Listagem() {
       pagamento: "07-05-2025",
       baixa: "...",
     },
-    // Repete conforme necessário
+    
   ];
 
   return (

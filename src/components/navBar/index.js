@@ -2,43 +2,53 @@ import { FiLogOut } from 'react-icons/fi';
 import { HiOutlineViewList } from 'react-icons/hi';
 import { MdDashboard } from "react-icons/md";
 import { BiBarcode } from 'react-icons/bi';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/images/logo.png";
 
 import './navBar.css';
 import { FaTruck } from 'react-icons/fa';
 
-export default function NavBar(){
-    return(
+export default function NavBar() {
+    const navigate = useNavigate();
+
+    function handleLogout(event) {
+        event.preventDefault(); 
+        const confirmLogout = window.confirm("Tem certeza que deseja sair?");
+        if (confirmLogout) {
+            navigate("/"); 
+        }
+    }
+
+    return (
         <div className="sidebar">
-           <div>
-            <img src={logo} alt="Brasão de Caruaru"/>
-           </div>
+            <div>
+                <img src={logo} alt="Brasão de Caruaru" />
+            </div>
 
-           <Link to="/visaoGeral">
-                 <MdDashboard color='#151515' size={24}></MdDashboard>
+            <Link to="/visaoGeral">
+                <MdDashboard color='#151515' size={24} />
                 Visão Geral
-           </Link> 
+            </Link>
 
-           <Link to="/boletos">
-                <BiBarcode color='#151515FFF' size={24}></BiBarcode>
+            <Link to="/boletos">
+                <BiBarcode color='#151515' size={24} />
                 Boletos
-           </Link> 
+            </Link>
 
-           <Link to="/listagem">
-                <HiOutlineViewList color='#151515FFF' size={24}></HiOutlineViewList>
+            <Link to="/listagem">
+                <HiOutlineViewList color='#151515' size={24} />
                 Listagem
-           </Link> 
+            </Link>
 
-           <Link to="/veiculos">
-                <FaTruck color='#151515FFF' size={24}></FaTruck>
-                Listagem
-           </Link> 
+            <Link to="/veiculos">
+                <FaTruck color='#151515' size={24} />
+                Veículos
+            </Link>
 
-           <Link to="#">
-                <FiLogOut color='#151515FFF' size={24}></FiLogOut>
+            <Link to="#" onClick={handleLogout}>
+                <FiLogOut color='#151515' size={24} />
                 Sair
-           </Link> 
+            </Link>
         </div>
-    )
+    );
 }

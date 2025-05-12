@@ -8,6 +8,7 @@ export default function Veiculos() {
   const [historico, setHistorico] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalRegistros, setTotalRegistros] = useState(0);
   const [loading, setLoading] = useState(false);
 
   const [filtro, setFiltro] = useState("todos");
@@ -16,44 +17,35 @@ export default function Veiculos() {
   const [valorDia, setValorDia] = useState("");
 
   useEffect(() => {
-    setLoading(true);
-    fetch(`http://localhost:3002/api/historico-entrada?page=${page}&limit=7`)
-      .then((res) => res.json())
-      .then((data) => {
-        setHistorico(data.historico);
-        setTotalPages(data.totalPages);
-      })
-      .catch((error) => {
-        alert("Erro ao buscar dados: " + error);
-      })
-      .finally(() => setLoading(false));
-  }, [page]);
+    buscarDados();
+  }, [page, filtro]);
 
-  const buscarFiltro = () => {
+  const buscarDados = () => {
     setLoading(true);
-    let url = "http://localhost:3002/api/historico-entrada-filtrado";
+    let url = filtro !== "todos" ? "http://localhost:3002/api/historico-entrada-filtrado" : `http://localhost:3002/api/historico-entrada?page=${page}&limit=7`;
 
     if (filtro === "motorista") {
-      url += `?motorista=${encodeURIComponent(valorMotorista)}`;
+      url += `?motorista=${encodeURIComponent(valorMotorista)}&page=${page}`;
     } else if (filtro === "mes") {
-      url += `?mes=${valorMes}`;
+      url += `?mes=${valorMes}&page=${page}`;
     } else if (filtro === "dia") {
-      const dia = valorDia.split("-").reverse().join(""); // de '2025-03-01' para '01032025'
-      url += `?dia=${dia}`;
+      const diaFormatado = parseInt(valorDia.split("-")[2]);
+      url += `?dia=${diaFormatado}&page=${page}`;
     } else if (filtro === "mes_motorista") {
-      url += `?mes=${valorMes}&motorista=${encodeURIComponent(valorMotorista)}`;
-    } else {
-      // modo padrão (todos)
-      url = `http://localhost:3002/api/historico-entrada?page=${page}&limit=7`;
+      url += `?mes=${valorMes}&motorista=${encodeURIComponent(valorMotorista)}&page=${page}`;
     }
+
+    console.log("URL da requisição:", url);
 
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
-        setHistorico(data.historico || []);
-        setTotalPages(data.totalPages || 1);
+        console.log("Dados retornados:", data);
+        setHistorico(Array.isArray(data) ? data : data.historico || []);
+        setTotalRegistros(data.total || historico.length);
+        setTotalPages(Math.max(1, Math.ceil((data.total || historico.length) / 7))); 
       })
-      .catch((err) => alert("Erro ao filtrar: " + err))
+      .catch((err) => console.error("Erro ao buscar dados:", err))
       .finally(() => setLoading(false));
   };
 
@@ -79,37 +71,20 @@ export default function Veiculos() {
             placeholder="Nome do motorista"
             value={valorMotorista}
             onChange={(e) => setValorMotorista(e.target.value)}
-            style={{
-              display:
-                filtro === "motorista" || filtro === "mes_motorista"
-                  ? "inline"
-                  : "none",
-            }}
+            style={{ display: filtro.includes("motorista") ? "inline" : "none" }}
           />
 
           <select
             value={valorMes}
             onChange={(e) => setValorMes(e.target.value)}
-            style={{
-              display:
-                filtro === "mes" || filtro === "mes_motorista"
-                  ? "inline"
-                  : "none",
-            }}
+            style={{ display: filtro.includes("mes") ? "inline" : "none" }}
           >
             <option value="">Selecione o mês</option>
-            <option value="1">Janeiro</option>
-            <option value="2">Fevereiro</option>
-            <option value="3">Março</option>
-            <option value="4">Abril</option>
-            <option value="5">Maio</option>
-            <option value="6">Junho</option>
-            <option value="7">Julho</option>
-            <option value="8">Agosto</option>
-            <option value="9">Setembro</option>
-            <option value="10">Outubro</option>
-            <option value="11">Novembro</option>
-            <option value="12">Dezembro</option>
+            {[...Array(12)].map((_, i) => (
+              <option key={i + 1} value={i + 1}>
+                {new Date(2025, i).toLocaleString("pt-BR", { month: "long" })}
+              </option>
+            ))}
           </select>
 
           <input
@@ -119,12 +94,12 @@ export default function Veiculos() {
             style={{ display: filtro === "dia" ? "inline" : "none" }}
           />
 
-          <button onClick={buscarFiltro}>Buscar</button>
+          <button onClick={() => { setPage(1); buscarDados(); }}>Buscar</button>
         </div>
 
         {loading ? (
           <p>Carregando...</p>
-        ) : (
+        ) : historico.length > 0 ? (
           <table>
             <thead>
               <tr>
@@ -135,37 +110,31 @@ export default function Veiculos() {
               </tr>
             </thead>
             <tbody>
-              {historico.map((item) => (
-                <tr key={item.id}>
+              {historico.map((item, index) => (
+                <tr key={index}>
                   <td>{item.id}</td>
-                  <td>
-                    {new Date(item.data_hora_entrada).toLocaleString("pt-BR")}
-                  </td>
+                  <td>{new Date(item.data_hora_entrada).toLocaleString("pt-BR")}</td>
                   <td>{item.placa}</td>
                   <td>{item.motorista}</td>
                 </tr>
               ))}
             </tbody>
           </table>
+        ) : (
+          <p style={{ textAlign: "center", marginTop: "20px" }}>
+            Nenhum dado encontrado para o filtro selecionado.
+          </p>
         )}
 
         <div className="tabela-footer">
           <div className="paginacao">
-            <button
-              onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-              disabled={page === 1}
-            >
+            <button onClick={() => setPage((prev) => Math.max(prev - 1, 1))} disabled={page === 1}>
               <FaArrowLeft color="#FFF" size={18} />
             </button>
 
-            <span>
-              {page} / {totalPages}
-            </span>
+            <span>{page} / {totalPages} </span> 
 
-            <button
-              onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-              disabled={page === totalPages}
-            >
+            <button onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))} disabled={page === totalPages}>
               <FaArrowRight color="#FFF" size={18} />
             </button>
           </div>

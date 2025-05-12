@@ -34,8 +34,10 @@ export default function Login() {
         password: password,
       });
 
-      if (response.status === 200 && response.data.token) {
-        localStorage.setItem("token", response.data.token);
+      if (response.status === 200 && response.data.token && response.data.id_cliente) {
+        localStorage.setItem("token", response.data.token); // 🆕 Armazena o token
+        localStorage.setItem("id_cliente", response.data.id_cliente); // 🆕 Armazena o ID do usuário
+        localStorage.setItem("role", response.data.role); // 🆕 Armazena a função do usuário
         console.log("Login bem-sucedido, redirecionando...");
         navigate("/visaoGeral"); 
       } else {
@@ -83,7 +85,6 @@ export default function Login() {
     </div>
   );
 }
-
 
 const styles = {
   wrapper: {

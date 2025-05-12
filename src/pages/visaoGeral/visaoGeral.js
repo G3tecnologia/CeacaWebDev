@@ -4,16 +4,42 @@ import { FaUserCircle, FaChevronDown } from "react-icons/fa";
 import Cards from "../../components/cards";
 import NavBar from "../../components/navBar";
 import Title from "../../components/title";
-import { Chart } from "chart.js/auto"; //
+import { Chart } from "chart.js/auto";
 
 export default function VisaoGeral() {
   const [showPopup, setShowPopup] = useState(false);
+  const [totalRecebido, setTotalRecebido] = useState("R$ 0,00");
+  const [totalPendente, setTotalPendente] = useState("R$ 0,00");
+  const [valores, setValores] = useState(["R$ 5000", "R$ 1000", "R$ 2000"]);
 
   const nomes = ["Pagos", "Pendentes", "Baixados"];
-  const valores = ["R$ 5000", "R$ 1000", "R$ 2000"];
-
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
+
+  useEffect(() => {
+    fetch("http://localhost:3002/api/parcelas_receber")
+      .then((response) => response.json())
+      .then((data) => {
+        const valorRecebidoFormatado = parseFloat(data.total_a_receber).toLocaleString(
+          "pt-BR",
+          { style: "currency", currency: "BRL" }
+        );
+        setTotalRecebido(valorRecebidoFormatado);
+      })
+      .catch((error) => console.error("Erro ao buscar dados recebidos:", error));
+
+    fetch("http://localhost:3002/api/contas_receber/total")
+      .then((response) => response.json())
+      .then((data) => {
+        const valorPendenteFormatado = parseFloat(data.total_a_receber).toLocaleString(
+          "pt-BR",
+          { style: "currency", currency: "BRL" }
+        );
+        setTotalPendente(valorPendenteFormatado);
+        setValores(["R$ 5000", valorPendenteFormatado, "R$ 2000"]); 
+      })
+      .catch((error) => console.error("Erro ao buscar dados pendentes:", error));
+  }, []);
 
   useEffect(() => {
     if (chartInstance.current) {
@@ -25,7 +51,7 @@ export default function VisaoGeral() {
       datasets: [
         {
           data: valores.map((val) =>
-            parseFloat(val.replace("R$ ", "").replace(",", "."))
+            parseFloat(val.replace("R$ ", "").replace(".", "").replace(",", "."))
           ),
           backgroundColor: ["#12A405", "#F61717", "#D25903"],
           hoverBackgroundColor: ["#69DE5E", "#EA4F4F", "#D3722E"],
@@ -44,7 +70,7 @@ export default function VisaoGeral() {
         chartInstance.current.destroy();
       }
     };
-  }, [nomes, valores]);
+  }, [valores]); 
 
   return (
     <div>
@@ -54,7 +80,6 @@ export default function VisaoGeral() {
           <MdDashboard size={25} />
         </Title>
 
-        
         <div
           style={{
             position: "absolute",
@@ -71,7 +96,6 @@ export default function VisaoGeral() {
           <FaChevronDown size={20} color="#333" />
         </div>
 
-        
         {showPopup && (
           <div
             style={{
@@ -107,7 +131,7 @@ export default function VisaoGeral() {
 
         <Cards
           nomes={nomes}
-          valores={valores}
+          valores={[totalRecebido, totalPendente,]}
           informacoes={[
             "Recebido até hoje",
             "Boletos em aberto",
@@ -125,4 +149,3 @@ export default function VisaoGeral() {
     </div>
   );
 }
-
