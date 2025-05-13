@@ -34,17 +34,16 @@ export default function Login() {
         password: password,
       });
   
-      if (response.status === 200 && response.data.token && response.data.role) {
+      if (response.status === 200 && response.data.token && response.data.id) {
         localStorage.setItem("token", response.data.token);
-        localStorage.setItem("id_cliente", response.data.id);
+        localStorage.setItem("id", response.data.id); 
         localStorage.setItem("role", response.data.role);
   
         console.log("Login bem-sucedido, redirecionando...");
   
-        
         if (response.data.role === "admin") {
           navigate("/visaoGeral"); 
-        } else if (response.data.role === "user") {
+        } else {
           navigate("/boletos"); 
         }
         
@@ -57,7 +56,6 @@ export default function Login() {
       setLoading(false);
     }
   };
-  
   
 
   return (

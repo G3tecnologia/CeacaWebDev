@@ -14,7 +14,7 @@ export default function RoutesApp() {
     
       <Route 
         path="/visaoGeral" 
-        element={<PrivateRoute allowedRoles={["admin"]}><VisaoGeral /></PrivateRoute>}
+        element={<PrivateRoute allowedRoles={["admin", "user"]}><VisaoGeral /></PrivateRoute>}
       />
       <Route 
         path="/boletos" 
@@ -26,7 +26,7 @@ export default function RoutesApp() {
       />
       <Route 
         path="/veiculos" 
-        element={<PrivateRoute allowedRoles={["admin"]}><Veiculos /></PrivateRoute>}
+        element={<PrivateRoute allowedRoles={["admin", "user"]}><Veiculos /></PrivateRoute>}
       />
     </Routes>
   );
