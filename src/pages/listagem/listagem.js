@@ -63,7 +63,7 @@ export default function Listagem() {
       <NavBar />
       <div className="content">
         <Title name={role === "admin" ? "Listagem Geral" : "Meus Boletos"}>
-          <HiOutlineViewList size={25} />
+          <HiOutlineViewList color="#005816" size={25} />
         </Title>
 
         <div className="filtro-tabela">

@@ -1,18 +1,20 @@
+import { Chart } from "chart.js/auto";
 import { useEffect, useRef, useState } from "react";
 import { MdDashboard } from "react-icons/md";
-import { FaUserCircle, FaChevronDown } from "react-icons/fa";
 import Cards from "../../components/cards";
 import NavBar from "../../components/navBar";
 import Title from "../../components/title";
-import { Chart } from "chart.js/auto";
 
 export default function VisaoGeral() {
-  const [showPopup, setShowPopup] = useState(false);
   const [totalRecebido, setTotalRecebido] = useState("R$ 0,00");
   const [totalPendente, setTotalPendente] = useState("R$ 0,00");
-  const [valores, setValores] = useState(["R$ 5000", "R$ 1000", "R$ 2000"]);
+  const [valores, setValores] = useState(["R$ 5000", "R$ 2000"]);
 
-  const nomes = ["Pagos", "Pendentes", "Baixados"];
+  const [cpf_cnpj, setcpf_cnpj] = useState("");
+  const [oldPassword, setoldPassword] = useState("");
+  const [newPassword, setnewPassword] = useState("");
+
+  const nomes = ["Pagos", "Pendentes"];
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
 
@@ -20,25 +22,27 @@ export default function VisaoGeral() {
     fetch("http://localhost:3002/api/parcelas_receber")
       .then((response) => response.json())
       .then((data) => {
-        const valorRecebidoFormatado = parseFloat(data.total_a_receber).toLocaleString(
-          "pt-BR",
-          { style: "currency", currency: "BRL" }
-        );
+        const valorRecebidoFormatado = parseFloat(
+          data.total_a_receber
+        ).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
         setTotalRecebido(valorRecebidoFormatado);
       })
-      .catch((error) => console.error("Erro ao buscar dados recebidos:", error));
+      .catch((error) =>
+        console.error("Erro ao buscar dados recebidos:", error)
+      );
 
     fetch("http://localhost:3002/api/contas_receber/total")
       .then((response) => response.json())
       .then((data) => {
-        const valorPendenteFormatado = parseFloat(data.total_a_receber).toLocaleString(
-          "pt-BR",
-          { style: "currency", currency: "BRL" }
-        );
+        const valorPendenteFormatado = parseFloat(
+          data.total_a_receber
+        ).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
         setTotalPendente(valorPendenteFormatado);
-        setValores(["R$ 5000", valorPendenteFormatado, "R$ 2000"]); 
+        setValores(["R$ 5000", valorPendenteFormatado, "R$ 2000"]);
       })
-      .catch((error) => console.error("Erro ao buscar dados pendentes:", error));
+      .catch((error) =>
+        console.error("Erro ao buscar dados pendentes:", error)
+      );
   }, []);
 
   useEffect(() => {
@@ -51,9 +55,11 @@ export default function VisaoGeral() {
       datasets: [
         {
           data: valores.map((val) =>
-            parseFloat(val.replace("R$ ", "").replace(".", "").replace(",", "."))
+            parseFloat(
+              val.replace("R$ ", "").replace(".", "").replace(",", ".")
+            )
           ),
-          backgroundColor: ["#12A405", "#F61717", "#D25903"],
+          backgroundColor: ["#12A405", "#D25903", "#D25903"],
           hoverBackgroundColor: ["#69DE5E", "#EA4F4F", "#D3722E"],
         },
       ],
@@ -70,68 +76,28 @@ export default function VisaoGeral() {
         chartInstance.current.destroy();
       }
     };
-  }, [valores]); 
+  }, [valores]);
+
+  const handleSalvar = () => {
+    console.log("Dados salvos:", { cpf_cnpj, oldPassword, newPassword });
+  };
 
   return (
     <div>
       <NavBar />
       <div className="content">
         <Title name="Visão Geral">
-          <MdDashboard size={25} />
+          <MdDashboard size={25} color="#004410" />
+          cpfCnpj={cpf_cnpj}
+          oldPassword={oldPassword}
+          newPassword={newPassword}
+          onNovaSenhaChange={(e) => setoldPassword(e.target.value)}
+          onSalvar={handleSalvar}
         </Title>
-
-        <div
-          style={{
-            position: "absolute",
-            top: "20px",
-            right: "20px",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            gap: "5px",
-          }}
-          onClick={() => setShowPopup(!showPopup)}
-        >
-          <FaUserCircle size={30} color="#333" />
-          <FaChevronDown size={20} color="#333" />
-        </div>
-
-        {showPopup && (
-          <div
-            style={{
-              position: "absolute",
-              top: "50px",
-              right: "20px",
-              background: "#fff",
-              padding: "15px",
-              boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-              borderRadius: "8px",
-              width: "200px",
-            }}
-          >
-            <h4>Editar Perfil</h4>
-            <label>
-              Nome:
-              <input type="text" placeholder="Nome do usuário" />
-            </label>
-            <br />
-            <label>
-              Email:
-              <input type="email" placeholder="email@exemplo.com" />
-            </label>
-            <br />
-            <label>
-              Senha:
-              <input type="password" placeholder="Nova senha" />
-            </label>
-            <br />
-            <button onClick={() => setShowPopup(false)}>Fechar</button>
-          </div>
-        )}
 
         <Cards
           nomes={nomes}
-          valores={[totalRecebido, totalPendente,]}
+          valores={[totalRecebido, totalPendente]}
           informacoes={[
             "Recebido até hoje",
             "Boletos em aberto",
@@ -141,7 +107,7 @@ export default function VisaoGeral() {
 
         <div
           className="grafico"
-          style={{ width: "25%", marginTop: "90px", marginLeft: "150px" }}
+          style={{ width: "28%", marginTop: "90px", marginLeft: "450px" }}
         >
           <canvas ref={chartRef} width="400" height="400"></canvas>
         </div>

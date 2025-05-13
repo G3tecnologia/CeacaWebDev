@@ -40,7 +40,7 @@ export default function Listagem() {
       <NavBar />
       <div className="content">
         <Title name="Listagem">
-          <HiOutlineViewList size={25} />
+          <HiOutlineViewList size={25} color="#005816" />
         </Title>
 
         <Cards nomes={nomes} valores={valores} informacoes={informacoes} />
