@@ -13,6 +13,17 @@ export default function NavBar() {
   const navigate = useNavigate();
   const role = localStorage.getItem("role");
 
+  // Função para abrir o modal de logout
+  const handleLogout = () => {
+    setShowLogoutModal(true);
+  };
+
+  // Função de confirmação do logout
+  const confirmarLogout = () => {
+    localStorage.removeItem("role"); // Remove os dados do usuário
+    navigate("/login"); // Redireciona para a página de login
+  };
+
   return (
     <>
       <div className="sidebar">
@@ -54,10 +65,18 @@ export default function NavBar() {
           </>
         )}
 
-            <Link to="#" onClick={handleLogout}>
-                <FiLogOut color='#151515' size={24} />
-                Sair
-            </Link>
+        <Link to="#" onClick={handleLogout}>
+          <FiLogOut color='#151515' size={24} />
+          Sair
+        </Link>
+      </div>
+
+      {/* Modal de confirmação do logout */}
+      {showLogoutModal && (
+        <div className="logout-modal">
+          <p>Tem certeza que deseja sair?</p>
+          <button onClick={confirmarLogout}>Sim, sair</button>
+          <button onClick={() => setShowLogoutModal(false)}>Cancelar</button>
         </div>
       )}
     </>
