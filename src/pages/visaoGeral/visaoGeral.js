@@ -78,8 +78,51 @@ export default function VisaoGeral() {
     };
   }, [valores]);
 
-  const handleSalvar = () => {
-    console.log("Dados salvos:", { cpf_cnpj, oldPassword, newPassword });
+  const buscarDadosUsuario = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:3002/api/clientes/update-password"
+      );
+      const data = await response.json();
+
+      setcpf_cnpj(data.cpf_cnpj);
+      setoldPassword(data.oldPassword);
+      setnewPassword("");
+    } catch (error) {
+      console.error("Erro ao buscar dados do usuário:", error);
+    }
+  };
+
+  const handleSalvar = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:3002/api/clientes/update-password",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            cpf_cnpj,
+            oldPassword,
+            newPassword,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        alert("Senha atualizada com sucesso!");
+
+        // Atualiza o estado local: a nova senha se torna a antiga
+        setoldPassword(newPassword);
+        setnewPassword("");
+      } else {
+        alert("Erro ao atualizar a senha.");
+      }
+    } catch (error) {
+      console.error("Erro ao salvar dados:", error);
+      alert("Erro ao salvar os dados.");
+    }
   };
 
   return (
@@ -88,11 +131,6 @@ export default function VisaoGeral() {
       <div className="content">
         <Title name="Visão Geral">
           <MdDashboard size={25} color="#004410" />
-          cpfCnpj={cpf_cnpj}
-          oldPassword={oldPassword}
-          newPassword={newPassword}
-          onNovaSenhaChange={(e) => setoldPassword(e.target.value)}
-          onSalvar={handleSalvar}
         </Title>
 
         <Cards

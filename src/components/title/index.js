@@ -1,19 +1,57 @@
 import { useState } from "react";
 import { FaChevronDown, FaUserCircle } from "react-icons/fa";
-import './title.css'
+import axios from "axios";
+import "./title.css";
 
-export default function Title({
-  children,
-  name,
-  cpfCnpj,
-  onCpfCnpjChange,
-  senhaAntiga,
-  onSenhaAntigaChange,
-  novaSenha,
-  onNovaSenhaChange,
-  onSalvar,
-}) {
+export default function Title({ children, name }) {
   const [showPopup, setShowPopup] = useState(false);
+  const [cpfCnpj, setCpfCnpj] = useState(""); // valor digitado
+  const [senhaAntiga, setSenhaAntiga] = useState("");
+  const [novaSenha, setNovaSenha] = useState("");
+  const [mensagem, setMensagem] = useState("");
+
+  // Função de validação CPF ou CNPJ
+  const isValidCpfCnpj = (valor) => {
+    const apenasNumeros = valor.replace(/\D/g, "");
+    return apenasNumeros.length === 11 || apenasNumeros.length === 14;
+  };
+
+  // Função para lidar com o clique em "Salvar"
+  const onSalvar = async () => {
+    const documentoValido = isValidCpfCnpj(cpfCnpj);
+    if (!documentoValido) {
+      setMensagem("CPF deve ter 11 dígitos ou CNPJ 14 dígitos.");
+      return;
+    }
+
+    if (!senhaAntiga || !novaSenha) {
+      setMensagem("Por favor, preencha a senha antiga e a nova senha.");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3002/api/clientes/update-password",
+        {
+          cpf_cnpj: cpfCnpj, 
+          oldPassword: senhaAntiga, 
+          newPassword: novaSenha,
+        }
+      );
+
+      if (response.data.sucesso) {
+        setMensagem("Senha atualizada com sucesso!");
+        setShowPopup(false);
+        console.log("menssagem 1: ", response)
+      } else {
+        setMensagem(response.data.mensagem || "Erro ao atualizar senha.");
+        console.log("menssagem 2 : ", response)
+      }
+    } catch (error) {
+      setMensagem("Erro ao conectar com o servidor.");
+      console.log("menssagem 3 : ", error)
+    }
+  };
 
   return (
     <div className="title">
@@ -36,8 +74,8 @@ export default function Title({
             <input
               type="text"
               value={cpfCnpj}
-              onChange={onCpfCnpjChange}
-              disabled="true"
+              onChange={(e) => setCpfCnpj(e.target.value)}
+              placeholder="Digite seu CPF ou CNPJ"
             />
           </label>
 
@@ -46,8 +84,8 @@ export default function Title({
             <input
               type="password"
               value={senhaAntiga}
-              onChange={onSenhaAntigaChange}
-              disabled="true"
+              onChange={(e) => setSenhaAntiga(e.target.value)}
+              placeholder="Digite sua senha atual"
             />
           </label>
 
@@ -56,13 +94,17 @@ export default function Title({
             <input
               type="password"
               value={novaSenha}
-              onChange={onNovaSenhaChange}
+              onChange={(e) => setNovaSenha(e.target.value)}
               placeholder="Digite a nova senha"
             />
           </label>
 
+          {mensagem && <p className="mensagem">{mensagem}</p>}
+
           <div className="user-forms-buttons">
-            <button className="button salvar" onClick={onSalvar}>Salvar</button>
+            <button className="button salvar" onClick={onSalvar}>
+              Salvar
+            </button>
             <button
               className="button cancelar"
               onClick={() => setShowPopup(false)}
