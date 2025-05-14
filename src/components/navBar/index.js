@@ -13,15 +13,13 @@ export default function NavBar() {
   const navigate = useNavigate();
   const role = localStorage.getItem("role");
 
-
   const handleLogout = () => {
     setShowLogoutModal(true);
   };
 
-  
   const confirmarLogout = () => {
-    localStorage.removeItem("role"); 
-    navigate("/login"); 
+    localStorage.removeItem("role");
+    navigate("/login");
   };
 
   return (
@@ -66,17 +64,30 @@ export default function NavBar() {
         )}
 
         <Link to="#" onClick={handleLogout}>
-          <FiLogOut color='#151515' size={24} />
+          <FiLogOut color="#151515" size={24} />
           Sair
         </Link>
       </div>
 
-
       {showLogoutModal && (
-        <div className="logout-modal">
-          <p>Tem certeza que deseja sair?</p>
-          <button onClick={confirmarLogout}>Sim, sair</button>
-          <button onClick={() => setShowLogoutModal(false)}>Cancelar</button>
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <p>Tem certeza que deseja sair?</p>
+            <div className="modal-buttons">
+              <button
+                onClick={() => {
+                  localStorage.clear();
+                  navigate("/");
+                }}
+              >
+                Sim
+              </button>
+
+              <button onClick={() => setShowLogoutModal(false)}>
+                Cancelar
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </>
