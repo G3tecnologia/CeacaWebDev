@@ -19,30 +19,34 @@ export default function VisaoGeral() {
   const chartInstance = useRef(null);
 
   useEffect(() => {
-    fetch("http://localhost:3002/api/parcelas_receber")
-      .then((response) => response.json())
-      .then((data) => {
-        const valorRecebidoFormatado = parseFloat(
-          data.total_a_receber
-        ).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-        setTotalRecebido(valorRecebidoFormatado);
-      })
-      .catch((error) =>
-        console.error("Erro ao buscar dados recebidos:", error)
-      );
+    const fetchData = async () => {
+      try {
+        const [resRecebido, resPendente] = await Promise.all([
+          fetch("http://localhost:3002/api/parcelas_receber"),
+          fetch("http://localhost:3002/api/contas_receber/total"),
+        ]);
 
-    fetch("http://localhost:3002/api/contas_receber/total")
-      .then((response) => response.json())
-      .then((data) => {
-        const valorPendenteFormatado = parseFloat(
-          data.total_a_receber
+        const dataRecebido = await resRecebido.json();
+        const dataPendente = await resPendente.json();
+
+        const valorRecebidoFormatado = parseFloat(
+          dataRecebido.total_a_receber
         ).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+        const valorPendenteFormatado = parseFloat(
+          dataPendente.total_a_receber
+        ).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
         setTotalPendente(valorPendenteFormatado);
-        setValores(["R$ 5000", valorPendenteFormatado, "R$ 2000"]);
-      })
-      .catch((error) =>
-        console.error("Erro ao buscar dados pendentes:", error)
-      );
+        setTotalRecebido(valorRecebidoFormatado);
+        setValores([valorRecebidoFormatado, valorPendenteFormatado]);
+
+      } catch (error) {
+        console.error("Erro ao buscar dados:", error);
+      }
+    };
+
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -55,12 +59,10 @@ export default function VisaoGeral() {
       datasets: [
         {
           data: valores.map((val) =>
-            parseFloat(
-              val.replace("R$ ", "").replace(".", "").replace(",", ".")
-            )
+            parseFloat(val.replace(/[R$\s.]/g, "").replace(",", "."))
           ),
-          backgroundColor: ["#12A405", "#D25903", "#D25903"],
-          hoverBackgroundColor: ["#69DE5E", "#EA4F4F", "#D3722E"],
+          backgroundColor: ["#E63B3B", "#12A405"],
+          hoverBackgroundColor: ["#C92828", "#69DE5E"],
         },
       ],
     };
@@ -136,11 +138,7 @@ export default function VisaoGeral() {
         <Cards
           nomes={nomes}
           valores={[totalRecebido, totalPendente]}
-          informacoes={[
-            "Recebido até hoje",
-            "Boletos em aberto",
-            "Pagamentos futuros",
-          ]}
+          informacoes={["Recebido até hoje", "Boletos em aberto"]}
         />
 
         <div
