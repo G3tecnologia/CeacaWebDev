@@ -13,15 +13,15 @@ export default function NavBar() {
   const navigate = useNavigate();
   const role = localStorage.getItem("role");
 
-  // Função para abrir o modal de logout
+
   const handleLogout = () => {
     setShowLogoutModal(true);
   };
 
-  // Função de confirmação do logout
+  
   const confirmarLogout = () => {
-    localStorage.removeItem("role"); // Remove os dados do usuário
-    navigate("/login"); // Redireciona para a página de login
+    localStorage.removeItem("role"); 
+    navigate("/login"); 
   };
 
   return (
@@ -71,7 +71,7 @@ export default function NavBar() {
         </Link>
       </div>
 
-      {/* Modal de confirmação do logout */}
+
       {showLogoutModal && (
         <div className="logout-modal">
           <p>Tem certeza que deseja sair?</p>
