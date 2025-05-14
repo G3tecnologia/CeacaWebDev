@@ -61,10 +61,11 @@ export default function NavBar() {
                 </>
             )}
 
-            <Link to="#" onClick={handleLogout}>
-                <FiLogOut color='#151515' size={24} />
-                Sair
-            </Link>
+<Link to="#" onClick={handleLogout} className="logout-button">
+    <FiLogOut color='#ffffff' size={24} />
+    Sair
+</Link>
+
         </div>
     );
 }

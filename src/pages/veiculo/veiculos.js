@@ -13,42 +13,53 @@ export default function Veiculos() {
 
   const [filtro, setFiltro] = useState("todos");
   const [valorMotorista, setValorMotorista] = useState("");
+  const [valorPlaca, setValorPlaca] = useState("");
+  const [valorDescricao, setValorDescricao] = useState("");
+  const [valorData, setValorData] = useState("");
   const [valorMes, setValorMes] = useState("");
-  const [valorDia, setValorDia] = useState("");
 
   useEffect(() => {
     buscarDados();
-  }, [page, filtro]);
+  }, [page]); 
 
   const buscarDados = () => {
     setLoading(true);
-    let url = filtro !== "todos" ? "http://localhost:3002/api/historico-entrada-filtrado" : `http://localhost:3002/api/historico-entrada?page=${page}&limit=7`;
-
-    if (filtro === "motorista") {
-      url += `?motorista=${encodeURIComponent(valorMotorista)}&page=${page}`;
-    } else if (filtro === "mes") {
-      url += `?mes=${valorMes}&page=${page}`;
-    } else if (filtro === "dia") {
-      const diaFormatado = parseInt(valorDia.split("-")[2]);
-      url += `?dia=${diaFormatado}&page=${page}`;
-    } else if (filtro === "mes_motorista") {
-      url += `?mes=${valorMes}&motorista=${encodeURIComponent(valorMotorista)}&page=${page}`;
+    let url = "http://localhost:3002/api/historico-entrada-filtrado?";
+    let params = [];
+  
+    if (filtro === "motorista" && valorMotorista.trim()) {
+      params.push(`motorista=${encodeURIComponent(valorMotorista)}`);
     }
-
-    console.log("URL da requisição:", url);
-
+    if (filtro === "placa" && valorPlaca.trim()) {
+      params.push(`placa=${encodeURIComponent(valorPlaca)}`);
+    }
+    if (filtro === "descricao" && valorDescricao.trim()) {
+      params.push(`descricao_mercadoria_veiculo=${encodeURIComponent(valorDescricao)}`);
+    }
+    if (filtro === "data" && valorData) {
+      const diaFormatado = valorData.split("-")[2]; 
+      params.push(`dia=${diaFormatado}`);
+    }
+    if (filtro === "mes" && valorMes) {
+      params.push(`mes=${valorMes}`);
+    }
+  
+    url += params.length > 0 ? params.join("&") + `&page=${page}` : `page=${page}&limit=7`;
+  
+    console.log("🚀 URL gerada:", url); 
+  
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
-        console.log("Dados retornados:", data);
-        setHistorico(Array.isArray(data) ? data : data.historico || []);
-        setTotalRegistros(data.total || historico.length);
-        setTotalPages(Math.max(1, Math.ceil((data.total || historico.length) / 7))); 
+        console.log("🧐 Dados retornados pela API:", data); 
+        setHistorico(Array.isArray(data.historico) ? data.historico : []);
+        setTotalRegistros(data.total || 0);
+        setTotalPages(Math.max(1, Math.ceil((data.total || 0) / 7)));
       })
-      .catch((err) => console.error("Erro ao buscar dados:", err))
+      .catch((err) => console.error("❌ Erro ao buscar dados:", err))
       .finally(() => setLoading(false));
   };
-
+  
   return (
     <div>
       <NavBar />
@@ -61,24 +72,18 @@ export default function Veiculos() {
           <select value={filtro} onChange={(e) => setFiltro(e.target.value)}>
             <option value="todos">Todos</option>
             <option value="motorista">Por Motorista</option>
+            <option value="placa">Por Placa</option>
+            <option value="descricao">Por Descrição da Mercadoria</option>
+            <option value="data">Por Dia</option>
             <option value="mes">Por Mês</option>
-            <option value="dia">Por Dia</option>
-            <option value="mes_motorista">Por Mês e Motorista</option>
           </select>
 
-          <input
-            type="text"
-            placeholder="Nome do motorista"
-            value={valorMotorista}
-            onChange={(e) => setValorMotorista(e.target.value)}
-            style={{ display: filtro.includes("motorista") ? "inline" : "none" }}
-          />
+          <input type="text" placeholder="Nome do motorista" value={valorMotorista} onChange={(e) => setValorMotorista(e.target.value)} style={{ display: filtro === "motorista" ? "inline" : "none" }} />
+          <input type="text" placeholder="Placa do veículo" value={valorPlaca} onChange={(e) => setValorPlaca(e.target.value)} style={{ display: filtro === "placa" ? "inline" : "none" }} />
+          <input type="text" placeholder="Descrição da Mercadoria" value={valorDescricao} onChange={(e) => setValorDescricao(e.target.value)} style={{ display: filtro === "descricao" ? "inline" : "none" }} />
+          <input type="date" value={valorData} onChange={(e) => setValorData(e.target.value)} style={{ display: filtro === "data" ? "inline" : "none" }} />
 
-          <select
-            value={valorMes}
-            onChange={(e) => setValorMes(e.target.value)}
-            style={{ display: filtro.includes("mes") ? "inline" : "none" }}
-          >
+          <select value={valorMes} onChange={(e) => setValorMes(e.target.value)} style={{ display: filtro === "mes" ? "inline" : "none" }}>
             <option value="">Selecione o mês</option>
             {[...Array(12)].map((_, i) => (
               <option key={i + 1} value={i + 1}>
@@ -86,13 +91,6 @@ export default function Veiculos() {
               </option>
             ))}
           </select>
-
-          <input
-            type="date"
-            value={valorDia}
-            onChange={(e) => setValorDia(e.target.value)}
-            style={{ display: filtro === "dia" ? "inline" : "none" }}
-          />
 
           <button onClick={() => { setPage(1); buscarDados(); }}>Buscar</button>
         </div>
@@ -103,10 +101,12 @@ export default function Veiculos() {
           <table>
             <thead>
               <tr>
-                <th>ID</th>
+                <th>CODIGO</th>
                 <th>DATA/HORA</th>
                 <th>PLACA</th>
                 <th>MOTORISTA</th>
+                <th>MERCADORIA</th>
+                <th>PESO (kg)</th>
               </tr>
             </thead>
             <tbody>
@@ -116,28 +116,26 @@ export default function Veiculos() {
                   <td>{new Date(item.data_hora_entrada).toLocaleString("pt-BR")}</td>
                   <td>{item.placa}</td>
                   <td>{item.motorista}</td>
+                  <td>{item.descricao_mercadoria_veiculo || "Não informado"}</td>
+                  <td>{parseFloat(item.peso_mercadoria).toLocaleString("pt-BR", { minimumFractionDigits: 0, maximumFractionDigits: 2 })} kg</td>
                 </tr>
               ))}
             </tbody>
           </table>
         ) : (
-          <p style={{ textAlign: "center", marginTop: "20px" }}>
-            Nenhum dado encontrado para o filtro selecionado.
-          </p>
+          <p style={{ textAlign: "center", marginTop: "20px" }}>Nenhum dado encontrado para o filtro selecionado.</p>
         )}
 
         <div className="tabela-footer">
-          <div className="paginacao">
-            <button onClick={() => setPage((prev) => Math.max(prev - 1, 1))} disabled={page === 1}>
-              <FaArrowLeft color="#FFF" size={18} />
-            </button>
+          <button onClick={() => setPage((prev) => Math.max(prev - 1, 1))} disabled={page === 1}>
+            <FaArrowLeft color="#FFF" size={18} />
+          </button>
 
-            <span>{page} / {totalPages} </span> 
+          <span>{page} / {totalPages}</span>
 
-            <button onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))} disabled={page === totalPages}>
-              <FaArrowRight color="#FFF" size={18} />
-            </button>
-          </div>
+          <button onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))} disabled={page === totalPages}>
+            <FaArrowRight color="#FFF" size={18} />
+          </button>
         </div>
       </div>
     </div>
