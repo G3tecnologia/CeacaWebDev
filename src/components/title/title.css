@@ -9,10 +9,16 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
+.title-icon-name {
+  display: flex;
+  align-items: center; /* Alinha verticalmente */
+  gap: 0.5em; /* Espaço entre o ícone e o texto */
+}
+
 .title span {
   margin-left: 0.5em;
   font-size: 1.5em;
-  color: #005816;
+  color: #000000;
   font-weight: 600;
 }
 

@@ -6,6 +6,8 @@ import Cards from "../../components/cards";
 import NavBar from "../../components/navBar";
 import Title from "../../components/title";
 
+import "./visaoGeral.css";
+
 Chart.register(ChartDataLabels);
 
 export default function VisaoGeral() {
@@ -158,7 +160,7 @@ export default function VisaoGeral() {
       <NavBar />
       <div className="content">
         <Title name="Visão Geral">
-          <MdDashboard size={25} color="#004410" />
+          <MdDashboard size={25} color="#000" />
         </Title>
 
         <Cards
@@ -167,15 +169,7 @@ export default function VisaoGeral() {
           informacoes={["Recebido até hoje", "Boletos em aberto"]}
         />
 
-        <div
-          className="grafico"
-          style={{
-            width: "28%",
-            marginTop: "90px",
-            marginLeft: "auto",
-            marginRight: "auto",
-          }}
-        >
+        <div className="grafico">
           <canvas ref={chartRef} width="400" height="400"></canvas>
         </div>
       </div>

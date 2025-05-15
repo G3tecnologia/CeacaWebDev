@@ -18,9 +18,19 @@ export default function Veiculos() {
   const [valorData, setValorData] = useState("");
   const [valorMes, setValorMes] = useState("");
 
+  // Quando mudar o filtro, limpa os valores para evitar dados misturados
+  useEffect(() => {
+    setValorMotorista("");
+    setValorPlaca("");
+    setValorDescricao("");
+    setValorData("");
+    setValorMes("");
+  }, [filtro]);
+
+  // Busca dados sempre que qualquer dependência mudar
   useEffect(() => {
     buscarDados();
-  }, [page]);
+  }, [page, filtro, valorMotorista, valorPlaca, valorDescricao, valorData, valorMes]);
 
   const buscarDados = () => {
     setLoading(true);
@@ -28,28 +38,30 @@ export default function Veiculos() {
     let params = [];
 
     if (filtro === "motorista" && valorMotorista.trim()) {
-      params.push(`motorista=${encodeURIComponent(valorMotorista)}`);
+      params.push(`motorista=${encodeURIComponent(valorMotorista.trim())}`);
     }
     if (filtro === "placa" && valorPlaca.trim()) {
-      params.push(`placa=${encodeURIComponent(valorPlaca)}`);
+      params.push(`placa=${encodeURIComponent(valorPlaca.trim())}`);
     }
     if (filtro === "descricao" && valorDescricao.trim()) {
-      params.push(
-        `descricao_mercadoria_veiculo=${encodeURIComponent(valorDescricao)}`
-      );
+      params.push(`descricao_mercadoria_veiculo=${encodeURIComponent(valorDescricao.trim())}`);
     }
     if (filtro === "data" && valorData) {
-      const diaFormatado = valorData.split("-")[2];
-      params.push(`dia=${diaFormatado}`);
+      const partes = valorData.split("-");
+      if (partes.length === 3) {
+        const diaFormatado = parseInt(partes[2], 10);
+        params.push(`dia=${diaFormatado}`);
+      }
     }
     if (filtro === "mes" && valorMes) {
       params.push(`mes=${valorMes}`);
     }
 
-    url +=
-      params.length > 0
-        ? params.join("&") + `&page=${page}`
-        : `page=${page}&limit=7`;
+    // Paginação
+    params.push(`page=${page}`);
+    params.push(`limit=7`);
+
+    url += params.join("&");
 
     console.log("🚀 URL gerada:", url);
 
@@ -70,7 +82,7 @@ export default function Veiculos() {
       <NavBar />
       <div className="content">
         <Title name="Entrada de Veículos">
-          <FaTruck color="#005816" size={25} />
+          <FaTruck color="#000" size={25} />
         </Title>
 
         <div className="filtros-container">
@@ -127,7 +139,7 @@ export default function Veiculos() {
           <button
             onClick={() => {
               setPage(1);
-              buscarDados();
+              // O useEffect vai disparar buscarDados, então não chama aqui
             }}
           >
             Buscar
@@ -152,14 +164,10 @@ export default function Veiculos() {
               {historico.map((item, index) => (
                 <tr key={index}>
                   <td>{item.id}</td>
-                  <td>
-                    {new Date(item.data_hora_entrada).toLocaleString("pt-BR")}
-                  </td>
+                  <td>{new Date(item.data_hora_entrada).toLocaleString("pt-BR")}</td>
                   <td>{item.placa}</td>
                   <td>{item.motorista}</td>
-                  <td>
-                    {item.descricao_mercadoria_veiculo || "Não informado"}
-                  </td>
+                  <td>{item.descricao_mercadoria_veiculo || "Não informado"}</td>
                   <td>
                     {parseFloat(item.peso_mercadoria).toLocaleString("pt-BR", {
                       minimumFractionDigits: 0,

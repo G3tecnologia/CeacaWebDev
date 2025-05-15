@@ -5,11 +5,13 @@ import { FiLogOut } from "react-icons/fi";
 import { HiOutlineViewList } from "react-icons/hi";
 import { MdDashboard } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
+import { GiHamburgerMenu } from "react-icons/gi";
 import logo from "../../assets/images/logo.png";
 import "./navBar.css";
 
 export default function NavBar() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const role = localStorage.getItem("role");
 
@@ -24,65 +26,69 @@ export default function NavBar() {
 
   return (
     <>
-      <div className="sidebar">
+      <div className="menu-toggle" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+        <GiHamburgerMenu size={28} />
+      </div>
+
+      <div className={`sidebar ${isMenuOpen ? "open" : ""}`}>
         <div>
           <img src={logo} alt="Brasão de Caruaru" />
         </div>
 
         {role === "admin" && (
           <>
-            <Link to="/visaoGeral">
-              <MdDashboard color="#151515" size={24} />
+            <Link to="/visaoGeral" onClick={() => setIsMenuOpen(false)}>
+              <MdDashboard size={24} />
               Visão Geral
             </Link>
-            <Link to="/boletos">
-              <BiBarcode color="#151515" size={24} />
+            <Link to="/boletos" onClick={() => setIsMenuOpen(false)}>
+              <BiBarcode size={24} />
               Boletos
             </Link>
-            <Link to="/listagem">
-              <HiOutlineViewList color="#151515" size={24} />
+            <Link to="/listagem" onClick={() => setIsMenuOpen(false)}>
+              <HiOutlineViewList size={24} />
               Listagem
             </Link>
-            <Link to="/veiculos">
-              <FaTruck color="#151515" size={24} />
+            <Link to="/veiculos" onClick={() => setIsMenuOpen(false)}>
+              <FaTruck size={24} />
               Veículos
             </Link>
           </>
         )}
 
+        {/* Links para user */}
         {role === "user" && (
           <>
-            <Link to="/boletos">
-              <BiBarcode color="#151515" size={24} />
+            <Link to="/boletos" onClick={() => setIsMenuOpen(false)}>
+              <BiBarcode size={24} />
               Boletos
             </Link>
-            <Link to="/listagem">
-              <HiOutlineViewList color="#151515" size={24} />
+            <Link to="/listagem" onClick={() => setIsMenuOpen(false)}>
+              <HiOutlineViewList size={24} />
               Listagem
             </Link>
           </>
         )}
 
-        <Link to="#" onClick={handleLogout}>
-          <FiLogOut color="#151515" size={24} />
+        <Link
+          to="#"
+          onClick={() => {
+            handleLogout();
+            setIsMenuOpen(false);
+          }}
+        >
+          <FiLogOut size={24} />
           Sair
         </Link>
       </div>
 
+      {/* Modal de confirmação de logout */}
       {showLogoutModal && (
         <div className="modal-overlay">
           <div className="modal-content">
             <p>Tem certeza que deseja sair?</p>
             <div className="modal-buttons">
-              <button
-                onClick={() => {
-                  localStorage.clear();
-                  navigate("/");
-                }}
-              >
-                Sim
-              </button>
-
+              <button onClick={confirmarLogout}>Sim</button>
               <button onClick={() => setShowLogoutModal(false)}>
                 Cancelar
               </button>

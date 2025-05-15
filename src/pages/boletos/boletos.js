@@ -46,7 +46,7 @@ export default function Boletos() {
       <NavBar />
       <div className="content">
         <Title name="Boletos Mensais">
-          <HiOutlineViewList size={25} color="#005816" />
+          <HiOutlineViewList size={25} color="#000" />
         </Title>
 
         <div className="filtro-container">

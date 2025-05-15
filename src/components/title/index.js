@@ -1,21 +1,19 @@
+import axios from "axios";
 import { useState } from "react";
 import { FaChevronDown, FaUserCircle } from "react-icons/fa";
-import axios from "axios";
 import "./title.css";
 
 export default function Title({ children, name }) {
   const [showPopup, setShowPopup] = useState(false);
-  const [cpfCnpj, setCpfCnpj] = useState(""); 
+  const [cpfCnpj, setCpfCnpj] = useState("");
   const [senhaAntiga, setSenhaAntiga] = useState("");
   const [novaSenha, setNovaSenha] = useState("");
   const [mensagem, setMensagem] = useState("");
-
 
   const isValidCpfCnpj = (valor) => {
     const apenasNumeros = valor.replace(/\D/g, "");
     return apenasNumeros.length === 11 || apenasNumeros.length === 14;
   };
-
 
   const onSalvar = async () => {
     const documentoValido = isValidCpfCnpj(cpfCnpj);
@@ -33,8 +31,8 @@ export default function Title({ children, name }) {
       const response = await axios.post(
         "http://localhost:3002/api/clientes/update-password",
         {
-          cpf_cnpj: cpfCnpj, 
-          oldPassword: senhaAntiga, 
+          cpf_cnpj: cpfCnpj,
+          oldPassword: senhaAntiga,
           newPassword: novaSenha,
         }
       );
@@ -42,20 +40,20 @@ export default function Title({ children, name }) {
       if (response.data.sucesso) {
         setMensagem("Senha atualizada com sucesso!");
         setShowPopup(false);
-        console.log("menssagem 1: ", response)
+        console.log("menssagem 1: ", response);
       } else {
         setMensagem(response.data.mensagem || "Erro ao atualizar senha.");
-        console.log("menssagem 2 : ", response)
+        console.log("menssagem 2 : ", response);
       }
     } catch (error) {
       setMensagem("Erro ao conectar com o servidor.");
-      console.log("menssagem 3 : ", error)
+      console.log("menssagem 3 : ", error);
     }
   };
 
   return (
     <div className="title">
-      <div>
+      <div className="title-icon-name">
         {children}
         <span>{name}</span>
       </div>

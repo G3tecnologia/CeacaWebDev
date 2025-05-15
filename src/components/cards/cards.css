@@ -1,7 +1,8 @@
 .cards {
   display: flex;
-  gap: 1rem; 
+  gap: 1rem;
   justify-content: space-between;
+  flex-wrap: wrap;
 }
 
 .card {
@@ -10,24 +11,27 @@
   background-color: #f5f5f5;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  min-width: 250px;
 }
 
-.nome{
-    font-weight: 700;
-    font-size: 1.5rem;
+/* Tipografia */
+.nome {
+  font-weight: 700;
+  font-size: 1.5rem;
 }
 
-.valor{
-    font-weight: bold;
-    font-size: 3.5rem;
+.valor {
+  font-weight: bold;
+  font-size: 3.5rem;
 }
 
-span{
-    color: #5f5f5f;
-    font-size: 1.3rem;
-    font-weight: 700;
+span {
+  color: #5f5f5f;
+  font-size: 1.3rem;
+  font-weight: 700;
 }
 
+/* Cores */
 .card.verde p {
   color: #12A405;
 }
@@ -41,11 +45,37 @@ span{
 }
 
 .card.verde .valor {
-    color: #12A405;
+  color: #12A405;
 }
+
 .card.vermelho .valor {
-    color: #CE2B2B;
+  color: #CE2B2B;
 }
+
 .card.laranja .valor {
-    color: #D25903;
+  color: #D25903;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .cards {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .card {
+    width: 100%;
+  }
+
+  .valor {
+    font-size: 2.5rem;
+  }
+
+  .nome {
+    font-size: 1.3rem;
+  }
+
+  span {
+    font-size: 1.1rem;
+  }
 }
