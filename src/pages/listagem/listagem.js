@@ -117,7 +117,7 @@ export default function Listagem() {
                             ).toLocaleDateString("pt-BR")}
                           </td>
                           <td>{item.parcelas}</td>
-                          <td>{item.status_remessa}</td>
+                          <td>{item.pago === "PG" ? "Pago" : "Pendente"}</td>
                           <td>R$ {(Number(item.valor) || 0).toFixed(2)}</td>
                           <td>R$ {(Number(item.juros) || 0).toFixed(2)}</td>
                           <td>R$ {(Number(item.multa) || 0).toFixed(2)}</td>
