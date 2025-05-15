@@ -5,12 +5,13 @@ import Boletos from "../pages/boletos/boletos";
 import Listagem from "../pages/listagem/listagem";
 import VisaoGeral from "../pages/visaoGeral/visaoGeral";
 import Veiculos from "../pages/veiculo/veiculos";
+import Cadastro from "../pages/cadastro/cadastro"; 
 
 export default function RoutesApp() {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
-      
+      <Route path="/cadastro" element={<Cadastro />} />
     
       <Route 
         path="/visaoGeral" 

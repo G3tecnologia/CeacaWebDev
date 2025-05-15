@@ -5,18 +5,18 @@ import "./title.css";
 
 export default function Title({ children, name }) {
   const [showPopup, setShowPopup] = useState(false);
-  const [cpfCnpj, setCpfCnpj] = useState(""); // valor digitado
+  const [cpfCnpj, setCpfCnpj] = useState(""); 
   const [senhaAntiga, setSenhaAntiga] = useState("");
   const [novaSenha, setNovaSenha] = useState("");
   const [mensagem, setMensagem] = useState("");
 
-  // Função de validação CPF ou CNPJ
+
   const isValidCpfCnpj = (valor) => {
     const apenasNumeros = valor.replace(/\D/g, "");
     return apenasNumeros.length === 11 || apenasNumeros.length === 14;
   };
 
-  // Função para lidar com o clique em "Salvar"
+
   const onSalvar = async () => {
     const documentoValido = isValidCpfCnpj(cpfCnpj);
     if (!documentoValido) {

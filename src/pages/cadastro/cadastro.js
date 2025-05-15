@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import logo from "../../assets/images/logo.png";
 
-export default function Login() {
+export default function Cadastro() {
   const [cpfCnpj, setCpfCnpj] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -19,36 +20,30 @@ export default function Login() {
       setError("A senha deve ter pelo menos 6 caracteres.");
       return false;
     }
+    if (password !== confirmPassword) {
+      setError("As senhas não coincidem.");
+      return false;
+    }
     setError("");
     return true;
   };
 
-  const handleLogin = async () => {
+  const handleCadastro = async () => {
     if (!validateInputs()) return;
-  
+
     setLoading(true);
-  
+
     try {
-      const response = await axios.post("http://localhost:3002/api/login", {
+      const response = await axios.post("http://localhost:3002/api/clientes/set-password", {
         cpf_cnpj: cpfCnpj,
         password: password,
       });
-  
-      if (response.status === 200 && response.data.token && response.data.id) {
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("id", response.data.id); 
-        localStorage.setItem("role", response.data.role);
-  
-        console.log("Login bem-sucedido, redirecionando...");
-  
-        if (response.data.role === "admin") {
-          navigate("/visaoGeral"); 
-        } else {
-          navigate("/boletos"); 
-        }
-        
+
+      if (response.status === 200) {
+        alert("Cadastro realizado com sucesso! Agora faça login.");
+        navigate("/login");
       } else {
-        setError(response.data.message || "Credenciais inválidas!");
+        setError(response.data.message || "Erro ao cadastrar.");
       }
     } catch (error) {
       setError(error.response?.data?.message || "Erro ao conectar ao servidor.");
@@ -56,14 +51,13 @@ export default function Login() {
       setLoading(false);
     }
   };
-  
 
   return (
     <div style={styles.wrapper}>
       <div style={styles.container}>
         <img src={logo} alt="Logo" style={styles.logo} />
-        <h2 style={styles.title}>Login</h2>
-        <p style={styles.subtitle}>Insira seu CPF ou CNPJ e senha para acessar</p>
+        <h2 style={styles.title}>Cadastro</h2>
+        <p style={styles.subtitle}>Preencha os campos abaixo para criar sua conta</p>
         {error && <p style={styles.error}>{error}</p>}
         <input
           type="text"
@@ -79,31 +73,34 @@ export default function Login() {
           onChange={(e) => setPassword(e.target.value)}
           style={styles.input}
         />
+        <input
+          type="password"
+          placeholder="Confirme sua senha"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          style={styles.input}
+        />
         <button
-          onClick={handleLogin}
+          onClick={handleCadastro}
           style={{
             ...styles.button,
             backgroundColor: loading ? "#6c757d" : "#007bff",
           }}
           disabled={loading}
         >
-          {loading ? "Entrando..." : "Entrar"}
+          {loading ? "Cadastrando..." : "Cadastrar"}
         </button>
-  
-        
+
+     
         <p style={styles.registerText}>
-          Ainda não tem uma conta ?{" "}
-          <h4
-            style={styles.registerLink}
-            onClick={() => navigate("/cadastro")}
-          >
-            Cadastre-se aqui
+          Já tem uma conta?{" "}
+          <h4 style={styles.registerLink} onClick={() => navigate("/")}>
+            Faça login aqui
           </h4>
         </p>
       </div>
     </div>
   );
-  
 }
 
 const styles = {
@@ -155,11 +152,6 @@ const styles = {
     fontWeight: "bold",
     transition: "background 0.3s ease",
   },
-  error: {
-    color: "red",
-    fontSize: "14px",
-    marginBottom: "12px",
-  },
   registerText: {
     marginTop: "10px",
     fontSize: "14px",
@@ -171,5 +163,9 @@ const styles = {
     fontWeight: "bold",
     textDecoration: "underline",
   },
+  error: {
+    color: "red",
+    fontSize: "14px",
+    marginBottom: "12px",
+  },
 };
-
