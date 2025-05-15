@@ -20,13 +20,13 @@ export default function Veiculos() {
 
   useEffect(() => {
     buscarDados();
-  }, [page]); 
+  }, [page]);
 
   const buscarDados = () => {
     setLoading(true);
     let url = "http://localhost:3002/api/historico-entrada-filtrado?";
     let params = [];
-  
+
     if (filtro === "motorista" && valorMotorista.trim()) {
       params.push(`motorista=${encodeURIComponent(valorMotorista)}`);
     }
@@ -34,24 +34,29 @@ export default function Veiculos() {
       params.push(`placa=${encodeURIComponent(valorPlaca)}`);
     }
     if (filtro === "descricao" && valorDescricao.trim()) {
-      params.push(`descricao_mercadoria_veiculo=${encodeURIComponent(valorDescricao)}`);
+      params.push(
+        `descricao_mercadoria_veiculo=${encodeURIComponent(valorDescricao)}`
+      );
     }
     if (filtro === "data" && valorData) {
-      const diaFormatado = valorData.split("-")[2]; 
+      const diaFormatado = valorData.split("-")[2];
       params.push(`dia=${diaFormatado}`);
     }
     if (filtro === "mes" && valorMes) {
       params.push(`mes=${valorMes}`);
     }
-  
-    url += params.length > 0 ? params.join("&") + `&page=${page}` : `page=${page}&limit=7`;
-  
-    console.log("🚀 URL gerada:", url); 
-  
+
+    url +=
+      params.length > 0
+        ? params.join("&") + `&page=${page}`
+        : `page=${page}&limit=7`;
+
+    console.log("🚀 URL gerada:", url);
+
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
-        console.log("🧐 Dados retornados pela API:", data); 
+        console.log("🧐 Dados retornados pela API:", data);
         setHistorico(Array.isArray(data.historico) ? data.historico : []);
         setTotalRegistros(data.total || 0);
         setTotalPages(Math.max(1, Math.ceil((data.total || 0) / 7)));
@@ -59,7 +64,7 @@ export default function Veiculos() {
       .catch((err) => console.error("❌ Erro ao buscar dados:", err))
       .finally(() => setLoading(false));
   };
-  
+
   return (
     <div>
       <NavBar />
@@ -78,12 +83,39 @@ export default function Veiculos() {
             <option value="mes">Por Mês</option>
           </select>
 
-          <input type="text" placeholder="Nome do motorista" value={valorMotorista} onChange={(e) => setValorMotorista(e.target.value)} style={{ display: filtro === "motorista" ? "inline" : "none" }} />
-          <input type="text" placeholder="Placa do veículo" value={valorPlaca} onChange={(e) => setValorPlaca(e.target.value)} style={{ display: filtro === "placa" ? "inline" : "none" }} />
-          <input type="text" placeholder="Descrição da Mercadoria" value={valorDescricao} onChange={(e) => setValorDescricao(e.target.value)} style={{ display: filtro === "descricao" ? "inline" : "none" }} />
-          <input type="date" value={valorData} onChange={(e) => setValorData(e.target.value)} style={{ display: filtro === "data" ? "inline" : "none" }} />
+          <input
+            type="text"
+            placeholder="Nome do motorista"
+            value={valorMotorista}
+            onChange={(e) => setValorMotorista(e.target.value)}
+            style={{ display: filtro === "motorista" ? "inline" : "none" }}
+          />
+          <input
+            type="text"
+            placeholder="Placa do veículo"
+            value={valorPlaca}
+            onChange={(e) => setValorPlaca(e.target.value)}
+            style={{ display: filtro === "placa" ? "inline" : "none" }}
+          />
+          <input
+            type="text"
+            placeholder="Descrição da Mercadoria"
+            value={valorDescricao}
+            onChange={(e) => setValorDescricao(e.target.value)}
+            style={{ display: filtro === "descricao" ? "inline" : "none" }}
+          />
+          <input
+            type="date"
+            value={valorData}
+            onChange={(e) => setValorData(e.target.value)}
+            style={{ display: filtro === "data" ? "inline" : "none" }}
+          />
 
-          <select value={valorMes} onChange={(e) => setValorMes(e.target.value)} style={{ display: filtro === "mes" ? "inline" : "none" }}>
+          <select
+            value={valorMes}
+            onChange={(e) => setValorMes(e.target.value)}
+            style={{ display: filtro === "mes" ? "inline" : "none" }}
+          >
             <option value="">Selecione o mês</option>
             {[...Array(12)].map((_, i) => (
               <option key={i + 1} value={i + 1}>
@@ -92,7 +124,14 @@ export default function Veiculos() {
             ))}
           </select>
 
-          <button onClick={() => { setPage(1); buscarDados(); }}>Buscar</button>
+          <button
+            onClick={() => {
+              setPage(1);
+              buscarDados();
+            }}
+          >
+            Buscar
+          </button>
         </div>
 
         {loading ? (
@@ -113,27 +152,47 @@ export default function Veiculos() {
               {historico.map((item, index) => (
                 <tr key={index}>
                   <td>{item.id}</td>
-                  <td>{new Date(item.data_hora_entrada).toLocaleString("pt-BR")}</td>
+                  <td>
+                    {new Date(item.data_hora_entrada).toLocaleString("pt-BR")}
+                  </td>
                   <td>{item.placa}</td>
                   <td>{item.motorista}</td>
-                  <td>{item.descricao_mercadoria_veiculo || "Não informado"}</td>
-                  <td>{parseFloat(item.peso_mercadoria).toLocaleString("pt-BR", { minimumFractionDigits: 0, maximumFractionDigits: 2 })} kg</td>
+                  <td>
+                    {item.descricao_mercadoria_veiculo || "Não informado"}
+                  </td>
+                  <td>
+                    {parseFloat(item.peso_mercadoria).toLocaleString("pt-BR", {
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 2,
+                    })}{" "}
+                    kg
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         ) : (
-          <p style={{ textAlign: "center", marginTop: "20px" }}>Nenhum dado encontrado para o filtro selecionado.</p>
+          <p style={{ textAlign: "center", marginTop: "20px" }}>
+            Nenhum dado encontrado para o filtro selecionado.
+          </p>
         )}
 
         <div className="tabela-footer">
-          <button onClick={() => setPage((prev) => Math.max(prev - 1, 1))} disabled={page === 1}>
+          <button
+            onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+            disabled={page === 1}
+          >
             <FaArrowLeft color="#FFF" size={18} />
           </button>
 
-          <span>{page} / {totalPages}</span>
+          <span>
+            {page} / {totalPages}
+          </span>
 
-          <button onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))} disabled={page === totalPages}>
+          <button
+            onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={page === totalPages}
+          >
             <FaArrowRight color="#FFF" size={18} />
           </button>
         </div>

@@ -5,14 +5,43 @@
   align-items: center;
 }
 
-.filtro-container input {
+.filtro-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  background: #f0f4f8;
+  padding: 12px 16px;
+  border-radius: 8px;
+}
+
+.filtro-container select {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 6px;
-  width: 250px;
+  min-width: 200px;
+  background-color: white;
+  font-size: 14px;
 }
 
-.botao-filtro,
+.filtro-container select {
+  text-transform: capitalize;
+}
+
+.botao-filtro {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  background-color: #005816;
+  color: white;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
 .botao-exportar {
   padding: 8px 12px;
   border: none;
@@ -59,4 +88,40 @@ tbody tr:hover {
   border-radius: 6px;
   background-color: #fff;
   color: #333;
+}
+
+.tabela-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.tabela-footer button {
+  background-color: #005816;
+  color: #FFF;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease;
+}
+
+.tabela-footer button:hover:enabled {
+  background-color: #007020;
+}
+
+.tabela-footer button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tabela-footer span {
+  color: #005816;
+  font-weight: bold;
+  font-size: 16px;
 }

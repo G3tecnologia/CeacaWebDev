@@ -1,9 +1,12 @@
 import { Chart } from "chart.js/auto";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import { useEffect, useRef, useState } from "react";
 import { MdDashboard } from "react-icons/md";
 import Cards from "../../components/cards";
 import NavBar from "../../components/navBar";
 import Title from "../../components/title";
+
+Chart.register(ChartDataLabels);
 
 export default function VisaoGeral() {
   const [totalRecebido, setTotalRecebido] = useState("R$ 0,00");
@@ -40,7 +43,6 @@ export default function VisaoGeral() {
         setTotalPendente(valorPendenteFormatado);
         setTotalRecebido(valorRecebidoFormatado);
         setValores([valorRecebidoFormatado, valorPendenteFormatado]);
-
       } catch (error) {
         console.error("Erro ao buscar dados:", error);
       }
@@ -61,8 +63,8 @@ export default function VisaoGeral() {
           data: valores.map((val) =>
             parseFloat(val.replace(/[R$\s.]/g, "").replace(",", "."))
           ),
-          backgroundColor: ["#E63B3B", "#12A405"],
-          hoverBackgroundColor: ["#C92828", "#69DE5E"],
+          backgroundColor: ["#12A405", "#E63B3B"],
+          hoverBackgroundColor: ["#69DE5E", "#C92828"],
         },
       ],
     };
@@ -71,6 +73,32 @@ export default function VisaoGeral() {
     chartInstance.current = new Chart(ctx, {
       type: "pie",
       data: data,
+      options: {
+        plugins: {
+          datalabels: {
+            formatter: (value, context) => {
+              return data.labels[context.dataIndex];
+            },
+            color: "#fff",
+            font: {
+              weight: "bold",
+              size: 14,
+            },
+          },
+          legend: {
+            display: true,
+            position: "bottom",
+            labels: {
+              color: "#333",
+              font: {
+                size: 14,
+              },
+              usePointStyle: true,
+            },
+          },
+        },
+      },
+      plugins: [ChartDataLabels],
     });
 
     return () => {
@@ -114,8 +142,6 @@ export default function VisaoGeral() {
 
       if (response.ok) {
         alert("Senha atualizada com sucesso!");
-
-        // Atualiza o estado local: a nova senha se torna a antiga
         setoldPassword(newPassword);
         setnewPassword("");
       } else {
@@ -143,7 +169,12 @@ export default function VisaoGeral() {
 
         <div
           className="grafico"
-          style={{ width: "28%", marginTop: "90px", marginLeft: "450px" }}
+          style={{
+            width: "28%",
+            marginTop: "90px",
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
         >
           <canvas ref={chartRef} width="400" height="400"></canvas>
         </div>
