@@ -26,10 +26,15 @@ export default function NavBar() {
 
   return (
     <>
+      {/* Botão Hamburguer */}
       <div className="menu-toggle" onClick={() => setIsMenuOpen(!isMenuOpen)}>
         <GiHamburgerMenu size={28} />
       </div>
 
+      {/* Overlay escuro */}
+      {isMenuOpen && <div className="overlay" onClick={() => setIsMenuOpen(false)} />}
+
+      {/* Menu lateral */}
       <div className={`sidebar ${isMenuOpen ? "open" : ""}`}>
         <div>
           <img src={logo} alt="Brasão de Caruaru" />
@@ -56,7 +61,6 @@ export default function NavBar() {
           </>
         )}
 
-        {/* Links para user */}
         {role === "user" && (
           <>
             <Link to="/boletos" onClick={() => setIsMenuOpen(false)}>
@@ -82,16 +86,14 @@ export default function NavBar() {
         </Link>
       </div>
 
-      {/* Modal de confirmação de logout */}
+      {/* Modal de confirmação */}
       {showLogoutModal && (
         <div className="modal-overlay">
           <div className="modal-content">
             <p>Tem certeza que deseja sair?</p>
             <div className="modal-buttons">
               <button onClick={confirmarLogout}>Sim</button>
-              <button onClick={() => setShowLogoutModal(false)}>
-                Cancelar
-              </button>
+              <button onClick={() => setShowLogoutModal(false)}>Cancelar</button>
             </div>
           </div>
         </div>

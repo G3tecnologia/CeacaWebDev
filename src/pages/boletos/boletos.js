@@ -1,11 +1,11 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
 import { HiOutlineViewList } from "react-icons/hi";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import NavBar from "../../components/navBar";
 import Title from "../../components/title";
 import "../listagem/listagem.css";
-import axios from "axios";
 
 export default function Boletos() {
   const [boletos, setBoletos] = useState([]);
@@ -50,7 +50,7 @@ export default function Boletos() {
         </Title>
 
         <div className="filtro-container">
-          <select value={mesFiltro} onChange={(e) => setMesFiltro(e.target.value)}>
+          <select value={mesFiltro} onChange={(e) => {setMesFiltro(e.target.value); setPage(1)}}>
             <option value="">Selecione o mês</option>
             {[...Array(12)].map((_, i) => (
               <option key={i + 1} value={i + 1}>
@@ -59,7 +59,7 @@ export default function Boletos() {
             ))}
           </select>
 
-          <select value={statusFiltro} onChange={(e) => setStatusFiltro(e.target.value)}>
+          <select value={statusFiltro} onChange={(e) => {setStatusFiltro(e.target.value); setPage(1)}}>
             <option value="pendente">Pendentes</option>
             <option value="pago">Pagos</option>
           </select>

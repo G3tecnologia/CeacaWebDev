@@ -7,6 +7,7 @@
   overflow-x: auto;
   background: #f8f9fb;
   border-radius: 8px;
+  padding: 16px;
 }
 
 table {
@@ -36,19 +37,6 @@ tbody tr:hover {
   border-radius: 6px;
   background-color: #fff;
   color: #333;
-}
-
-.tabela-container {
-  background: #f8f9fb;
-  border-radius: 8px;
-  overflow-x: auto;
-  padding: 16px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
 }
 
 .filtros-container {
@@ -82,22 +70,26 @@ table {
 
 .tabela-footer {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
   margin: 15px;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .paginacao {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .paginacao button {
-  background-color: #00350d; 
-  color: white;              
+  background-color: #00350d;
+  color: white;
   border: none;
   padding: 8px;
-  border-radius: 50%;      
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -106,10 +98,52 @@ table {
 }
 
 .paginacao button:hover {
-  background-color: #005816; 
+  background-color: #005816;
 }
 
 .paginacao button:disabled {
   background-color: #a9a9a9;
   cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .filtros-container {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .filtros-container select,
+  .filtros-container input,
+  .filtros-container button {
+    width: auto;
+    flex: 1 1 auto;
+    min-width: 100px;
+  }
+
+  .tabela-footer {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .paginacao {
+    justify-content: center;
+  }
+
+  th,
+  td {
+    font-size: 12px;
+    padding: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tabela-footer {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .tabela-footer span {
+    font-size: 14px;
+  }
 }
