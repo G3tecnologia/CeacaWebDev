@@ -1,4 +1,4 @@
-/* Sidebar padrão */
+/* SIDEBAR */
 .sidebar {
   width: 200px;
   margin: 0;
@@ -9,8 +9,6 @@
   overflow: auto;
   color: #000000;
   transition: transform 0.3s ease-in-out;
-  transform: translateX(0);
-  z-index: 1000;
 }
 
 .sidebar div {
@@ -51,27 +49,49 @@
   color: rgb(0, 0, 0);
 }
 
+/* LOGO */
+.logo-container {
+  display: none;
+  height: 100px;
+  padding: 20px;
+  text-align: center;
+}
+
+.logo-container img {
+  height: 60px;
+  object-fit: contain;
+  filter: drop-shadow(2px 3px 6px #121212);
+}
+
+/* CONTENT */
+.content {
+  margin-left: 200px;
+  padding: 1px 16px;
+}
+
+/* MENU TOGGLE (SETINHA) */
 .menu-toggle {
   display: none;
   position: fixed;
-  top: 1rem;
-  left: 1rem;
+  top: 50px;
+  left: calc(20px + 60px + 10px); 
+  transform: translateY(-50%);
   background-color: #e0e0e0;
   padding: 0.5rem;
   border-radius: 6px;
-  z-index: 1100;
+  z-index: 1001;
   cursor: pointer;
+  transition: left 0.3s ease;
 }
 
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 999;
+.sidebar.open ~ .menu-toggle {
+  left: 200px;
 }
+
+.sidebar:not(.open) ~ .menu-toggle {
+  left: calc(20px + 60px + 10px);
+}
+
 
 .modal-overlay {
   position: fixed;
@@ -130,13 +150,40 @@
   .sidebar {
     transform: translateX(-100%);
     width: 250px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    border-radius: 0 6px 6px 0;
+    background-color: #e0e0e0;
+    z-index: 1000;
+    transition: transform 0.3s ease-in-out;
   }
 
   .sidebar.open {
     transform: translateX(0);
   }
 
+  .sidebar div {
+    display: none;
+  }
+
   .menu-toggle {
     display: block;
+    top: 20px;
+    left: 20px;
+    transform: none;
+  }
+
+  .content {
+    margin-left: 0;
+  }
+
+  .logo-container {
+    display: block;
+  }
+
+  .sidebar a:first-of-type {
+    margin-top: 60px; 
   }
 }

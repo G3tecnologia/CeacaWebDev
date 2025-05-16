@@ -30,15 +30,7 @@ export default function Veiculos() {
   // Busca dados sempre que qualquer dependência mudar
   useEffect(() => {
     buscarDados();
-  }, [
-    page,
-    filtro,
-    valorMotorista,
-    valorPlaca,
-    valorDescricao,
-    valorData,
-    valorMes,
-  ]);
+  }, [page, filtro, valorMotorista, valorPlaca, valorDescricao, valorData, valorMes]);
 
   const buscarDados = () => {
     setLoading(true);
@@ -52,11 +44,7 @@ export default function Veiculos() {
       params.push(`placa=${encodeURIComponent(valorPlaca.trim())}`);
     }
     if (filtro === "descricao" && valorDescricao.trim()) {
-      params.push(
-        `descricao_mercadoria_veiculo=${encodeURIComponent(
-          valorDescricao.trim()
-        )}`
-      );
+      params.push(`descricao_mercadoria_veiculo=${encodeURIComponent(valorDescricao.trim())}`);
     }
     if (filtro === "data" && valorData) {
       const partes = valorData.split("-");
@@ -161,45 +149,36 @@ export default function Veiculos() {
         {loading ? (
           <p>Carregando...</p>
         ) : historico.length > 0 ? (
-          <div className="tabela-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>CODIGO</th>
-                  <th>DATA/HORA</th>
-                  <th>PLACA</th>
-                  <th>MOTORISTA</th>
-                  <th>MERCADORIA</th>
-                  <th>PESO (kg)</th>
+          <table>
+            <thead>
+              <tr>
+                <th>CODIGO</th>
+                <th>DATA/HORA</th>
+                <th>PLACA</th>
+                <th>MOTORISTA</th>
+                <th>MERCADORIA</th>
+                <th>PESO (kg)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {historico.map((item, index) => (
+                <tr key={index}>
+                  <td>{item.id}</td>
+                  <td>{new Date(item.data_hora_entrada).toLocaleString("pt-BR")}</td>
+                  <td>{item.placa}</td>
+                  <td>{item.motorista}</td>
+                  <td>{item.descricao_mercadoria_veiculo || "Não informado"}</td>
+                  <td>
+                    {parseFloat(item.peso_mercadoria).toLocaleString("pt-BR", {
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 2,
+                    })}{" "}
+                    kg
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {historico.map((item, index) => (
-                  <tr key={index}>
-                    <td>{item.id}</td>
-                    <td>
-                      {new Date(item.data_hora_entrada).toLocaleString("pt-BR")}
-                    </td>
-                    <td>{item.placa}</td>
-                    <td>{item.motorista}</td>
-                    <td>
-                      {item.descricao_mercadoria_veiculo || "Não informado"}
-                    </td>
-                    <td>
-                      {parseFloat(item.peso_mercadoria).toLocaleString(
-                        "pt-BR",
-                        {
-                          minimumFractionDigits: 0,
-                          maximumFractionDigits: 2,
-                        }
-                      )}{" "}
-                      kg
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         ) : (
           <p style={{ textAlign: "center", marginTop: "20px" }}>
             Nenhum dado encontrado para o filtro selecionado.

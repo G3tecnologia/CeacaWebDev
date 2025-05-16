@@ -7,6 +7,7 @@ import { MdDashboard } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
 import logo from "../../assets/images/logo.png";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import "./navBar.css";
 
 export default function NavBar() {
@@ -26,18 +27,17 @@ export default function NavBar() {
 
   return (
     <>
-      {/* Botão Hamburguer */}
       <div className="menu-toggle" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-        <GiHamburgerMenu size={28} />
+        {isMenuOpen ? <FaArrowLeft size={20} /> : <FaArrowRight size={20} />}
       </div>
 
-      {/* Overlay escuro */}
-      {isMenuOpen && <div className="overlay" onClick={() => setIsMenuOpen(false)} />}
+      {isMenuOpen && (
+        <div className="overlay" onClick={() => setIsMenuOpen(false)} />
+      )}
 
-      {/* Menu lateral */}
       <div className={`sidebar ${isMenuOpen ? "open" : ""}`}>
-        <div>
-          <img src={logo} alt="Brasão de Caruaru" />
+        <div className="sidebar-logo">
+          <img src={logo} alt="Logo" />
         </div>
 
         {role === "admin" && (
@@ -93,7 +93,9 @@ export default function NavBar() {
             <p>Tem certeza que deseja sair?</p>
             <div className="modal-buttons">
               <button onClick={confirmarLogout}>Sim</button>
-              <button onClick={() => setShowLogoutModal(false)}>Cancelar</button>
+              <button onClick={() => setShowLogoutModal(false)}>
+                Cancelar
+              </button>
             </div>
           </div>
         </div>
